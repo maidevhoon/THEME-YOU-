@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme You Quiz - AI Room Theme Advisor</title>
+    <meta name="description" content="Take the Theme You quiz to get personalized color palettes and decor ideas for your space, powered by AI.">
+    <meta property="og:title" content="Theme You Quiz - AI Room Theme Advisor">
+    <meta property="og:description" content="Take the Theme You quiz to get personalized color palettes and decor ideas for your space, powered by AI.">
+    <meta property="og:image" content="/imgs/Screenshot 2025-06-23 123536.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Theme You Quiz - AI Room Theme Advisor">
+    <meta name="twitter:description" content="Take the Theme You quiz to get personalized color palettes and decor ideas for your space, powered by AI.">
+    <meta name="twitter:image" content="/imgs/Screenshot 2025-06-23 123536.png">
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.12.0"
+        }
+      }
+    </script>
+</head>
+<body>
+  <video id="bg-video" autoplay loop muted playsinline style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;pointer-events:none;">
+    <source src="imgs/Untitled design.mp4" type="video/mp4">
+  </video>
+  <header class="site-header">
+    <nav class="site-nav">
+      <ul class="nav-list nav-list-left">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="#" class="nav-link">About</a></li>
+        <li><a href="#" class="nav-link">Services</a></li>
+        <li><a href="#" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="site-logo">
+        <img src="imgs/Screenshot 2025-06-23 123536.png" alt="Theme You Logo" class="site-logo-img" />
+      </div>
+      <ul class="nav-list nav-list-right">
+        <li><a href="#" class="nav-link">Live Support</a></li>
+        <li><a href="#" class="nav-link">Quick Query</a></li>
+        <li><a href="mailto:support@themeyou.com" class="nav-link">support@themeyou.com</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="outer-bg">
+    <div class="main-card">
+      <div class="lets-begin-container">
+        <button id="lets-begin-btn" class="lets-begin-btn">Let's Begin</button>
+      </div>
+      <!-- Quiz Steps -->
+      <div class="quiz-flow-container">
+        <div class="quiz-progress-bar"><div class="quiz-progress" id="quiz-progress"></div></div>
+        <div class="quiz-stepper">Step <span id="quiz-step-num">1</span> of 3</div>
+        <!-- Step 1: Transformation Type -->
+        <div id="transformation-choice-step" class="quiz-step-card">
+          <h2>Choose Your Transformation Focus</h2>
+          <p>What would you like your transformation to be based on?</p>
+          <div class="choices-grid">
+            <button class="choice-button" data-choice="personality">🧍 Personality Type</button>
+            <button class="choice-button" data-choice="wellness">🧘 Mental Wellness</button>
+            <button class="choice-button" data-choice="vastu">🧭 Vastu Alignment</button>
+            <button class="choice-button" data-choice="trend">🎨 Modern Aesthetic / Trend-Based</button>
+            <button class="choice-button" data-choice="custom">🧰 Custom (I have my own ideas)</button>
+          </div>
+        </div>
+        <!-- Step 2: Dynamic Questions -->
+        <div id="questions-step" class="quiz-step-card" style="display:none;">
+          <h2 id="questions-title"></h2>
+          <div id="questions-container"></div>
+          <button id="next-to-room-description-button" class="next-button">Next</button>
+        </div>
+        <!-- Step 3: Room Description -->
+        <div id="room-description-step" class="quiz-step-card" style="display:none;">
+          <h2>Describe Your Space</h2>
+          <p>Be specific about existing colors, furniture, lighting, size, and any key features. The more detail, the better!</p>
+          <div class="input-group">
+            <label for="room-description-input">Your Room Description:</label>
+            <textarea id="room-description-input" rows="6" placeholder="e.g., My living room is medium-sized with a large south-facing window. It has a grey sofa, dark wood coffee table, and beige walls. I want it to feel more open and bright..."></textarea>
+          </div>
+          <button id="get-theme-ideas-button" aria-label="Get Theme Ideas">✨ Get My Theme Ideas!</button>
+        </div>
+        <div id="status-area" role="status" aria-live="assertive"></div>
+        <!-- Results -->
+        <div id="results-step" class="quiz-step-card" style="display:none;">
+          <h2>Your Personalized Theme Suggestions</h2>
+          <div id="response-area" aria-live="polite"></div>
+          <button id="get-room-changes-button" style="display:none; margin-top:20px;">Do you want to get the changes done to your room?</button>
+          <input type="file" id="room-image-upload" accept="image/*" style="display:none; margin-top:10px;" />
+          <div id="ai-image-result" style="margin-top:20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.API_KEY = "AIzaSyDzkD_h48c3PCwmCVBIWYOO9sJpswooFEw";
+  </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html> 

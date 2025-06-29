@@ -1,0 +1,9 @@
+{
+    "name": "Theme You - AI Color & Mood Advisor",
+    "description": "An interactive, multi-step AI advisor for personalized color palettes and theme suggestions based on personality, wellness, Vastu, or trends.",
+    "requestFramePermissions": [],
+    "env": ["API_KEY"],
+    "scripts": {
+      "dev": "vite"
+    }
+  }

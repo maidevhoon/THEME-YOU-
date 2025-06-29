@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme You - AI Color & Mood Advisor</title>
+    <meta name="description" content="Theme You: Personalized AI color and mood advisor for your space. Get custom palettes and decor ideas based on your personality, wellness, or trends.">
+    <meta property="og:title" content="Theme You - AI Color & Mood Advisor">
+    <meta property="og:description" content="Personalized color palettes and decor ideas for your space, powered by AI.">
+    <meta property="og:image" content="/imgs/Screenshot 2025-06-23 123536.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Theme You - AI Color & Mood Advisor">
+    <meta name="twitter:description" content="Personalized color palettes and decor ideas for your space, powered by AI.">
+    <meta name="twitter:image" content="/imgs/Screenshot 2025-06-23 123536.png">
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.12.0"
+        }
+      }
+    </script>
+    <!-- Swiper.js Carousel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Animate.css for tags -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="mood-portal-overlay" id="mood-portal-overlay" style="display:none;">
+    <div class="mood-portal-card" id="mood-portal-card">
+      <button class="close-portal-btn" id="close-portal-btn" aria-label="Close Mood Portal">✕</button>
+      <div class="mood-portal-bg" id="mood-portal-bg"></div>
+      <img class="mood-portal-img" id="mood-portal-img" src="" alt="Mood Room" />
+      <div class="mood-portal-details" id="mood-portal-details">
+        <div class="mood-portal-tag" id="mood-portal-tag"></div>
+        <div class="mood-portal-moods" id="mood-portal-moods"></div>
+        <div class="mood-portal-quote" id="mood-portal-quote"></div>
+      </div>
+    </div>
+  </div>
+  <video id="bg-video" autoplay loop muted playsinline style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;pointer-events:none;">
+    <source src="imgs/Untitled design.mp4" type="video/mp4">
+  </video>
+  <header class="site-header">
+    <nav class="site-nav">
+      <ul class="nav-list nav-list-left">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="services.html" class="nav-link">Services</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="site-logo">
+        <a href="index.html"><img src="imgs/Screenshot 2025-06-23 123536.png" alt="Theme You Logo" class="site-logo-img" /></a>
+      </div>
+      <ul class="nav-list nav-list-right">
+        <li><a href="live-support.html" class="nav-link">Live Support</a></li>
+        <li><a href="quick-query.html" class="nav-link">Quick Query</a></li>
+        <li><button class="cta-btn">Start Now</button></li>
+      </ul>
+    </nav>
+        </header>
+  <div class="outer-bg">
+    <div class="main-card">
+      <main class="coming-soon-main">
+        <section class="coming-soon-left">
+          <h1 class="coming-soon-title">Theme You<br>Coming Soon</h1>
+          <p class="coming-soon-subtitle">Designed for your soul, not just your walls.</p>
+          <a href="quiz.html" id="test-prototype-btn" class="test-prototype-btn">🎨 Start Designing My Space.....</a>
+        </section>
+        <section class="coming-soon-right">
+          <div class="painter-bg-shape"></div>
+          <img src="imgs/Group 1.png" alt="Theme You Painters" class="coming-soon-img" />
+        </section>
+      </main>
+      <!-- Quiz Steps (hidden by default) -->
+      <div id="quiz-steps" style="display:none;">
+            <!-- Welcome Step -->
+        <div id="welcome-step" class="step-container hidden">
+                <p class="welcome-message">👋 Hey there! Ready to transform your space with Theme You?<br>
+                Before we begin, let me get to know your style and needs so I can create the perfect visual harmony for your room.<br>
+          Let's personalize this journey together 🌈✨</p>
+            </div>
+            <!-- Step 1: Transformation Type -->
+            <div id="transformation-choice-step" class="step-container hidden">
+                <h2>Step 1: Choose Your Transformation Focus</h2>
+                <p>What would you like your transformation to be based on? (Choose one)</p>
+                <div class="choices-grid">
+                    <button class="choice-button" data-choice="personality">🧍 Personality Type</button>
+                    <button class="choice-button" data-choice="wellness">🧘 Mental Wellness</button>
+                    <button class="choice-button" data-choice="vastu">🧭 Vastu Alignment</button>
+                    <button class="choice-button" data-choice="trend">🎨 Modern Aesthetic / Trend-Based</button>
+                    <button class="choice-button" data-choice="custom">🧰 Custom (I have my own ideas)</button>
+                </div>
+            </div>
+            <!-- Step 2: Dynamic Questions -->
+            <div id="questions-step" class="step-container hidden">
+                <h2 id="questions-title"></h2>
+          <div id="questions-container"></div>
+                <button id="next-to-room-description-button" class="next-button">Next: Describe Your Room</button>
+            </div>
+            <!-- Step 3: Room Description -->
+            <div id="room-description-step" class="step-container hidden">
+                <h2>Step 3: Describe Your Space</h2>
+                <p>Now, please describe the interior space you want transformed. Be specific about existing colors, furniture, lighting, size, and any key features. The more detail, the better!</p>
+                <div class="input-group">
+                    <label for="room-description-input">Your Room Description:</label>
+                    <textarea id="room-description-input" rows="6" placeholder="e.g., My living room is medium-sized with a large south-facing window. It has a grey sofa, dark wood coffee table, and beige walls. I want it to feel more open and bright..."></textarea>
+                </div>
+                <button id="get-theme-ideas-button" aria-label="Get Theme Ideas">✨ Get My Theme Ideas!</button>
+            </div>
+            <div id="status-area" role="status" aria-live="assertive"></div>
+            <!-- Results -->
+            <div id="results-step" class="response-container step-container hidden">
+                <h2>Your Personalized Theme Suggestions:</h2>
+                <div id="response-area" aria-live="polite"></div>
+          <button id="get-room-changes-button" style="display:none; margin-top:20px;">Do you want to get the changes done to your room?</button>
+          <input type="file" id="room-image-upload" accept="image/*" style="display:none; margin-top:10px;" />
+          <div id="ai-image-result" style="margin-top:20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Visual Demo Section: Before/After Room Transformation -->
+  <section class="visual-demo-section">
+    <h2 class="visual-demo-title gsap-heading"> Visual Demo <span class="visual-demo-sub">— From Your Space to Your Sanctuary —</span></h2>
+    <div class="before-after-slider-container">
+      <div id="before-after-slider">
+        <img src="imgs/Annu Original.jpg" alt="Before: Your Room" class="before-img" />
+        <img src="imgs/Annu Transformed 2.jpg" alt="AI Vision 1" class="after-img" />
+        <div class="slider-handle"></div>
+      </div>
+      <div class="slider-tags">
+        <div class="tag neon-glow animate__animated animate__pulse">🔥 Vastu Optimized</div>
+        <div class="tag bounce animate__animated animate__bounce">🎯 Focus & Productivity</div>
+      </div>
+    </div>
+    <audio id="mood-audio" src="imgs/Feather Light Mood Music  Sound Therapy.mp3" preload="auto"></audio>
+    <div class="swiper visual-demo-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide ai-vision-card" data-mood="🌿 Calm">
+          <img src="imgs/Annu Transformed.jpg" alt="AI Vision 1" class="visual-demo-img" />
+          <div class="tag neon-glow animate__animated animate__pulse">🔥 Vastu Optimized</div>
+          <div class="mood-chips">🌿 Calm | ☀️ Energizing | 🌌 Dreamy</div>
+          <div class="ai-vision-card-tooltip">Tap to View Mood Details</div>
+        </div>
+        <div class="swiper-slide ai-vision-card" data-mood="☀️ Energizing">
+          <img src="imgs/Annu Transformed 2.jpg" alt="AI Vision 2" class="visual-demo-img" />
+          <div class="tag bounce animate__animated animate__bounce">🎯 Focus & Productivity</div>
+          <div class="mood-chips">☀️ Energizing | 🌿 Calm</div>
+          <div class="ai-vision-card-tooltip">Tap to View Mood Details</div>
+        </div>
+        <div class="swiper-slide ai-vision-card" data-mood="🌌 Dreamy">
+          <img src="imgs/Annu Transformed 3.jpg" alt="AI Vision 3" class="visual-demo-img" />
+          <div class="tag neon-glow animate__animated animate__pulse">🌌 Dreamy Sanctuary</div>
+          <div class="mood-chips">🌌 Dreamy | 🌿 Calm</div>
+          <div class="ai-vision-card-tooltip">Tap to View Mood Details</div>
+        </div>
+      </div>
+      <!-- Add Pagination -->
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+  <footer class="site-footer-multicol">
+    <div class="footer-container">
+      <div class="footer-col footer-brand">
+        <div class="footer-logo-row">
+          <span class="footer-logo-icon">🎨</span>
+          <span class="footer-logo-text"> <b>Theme You</b></span>
+        </div>
+        <div class="footer-tagline">Transform your space with AI-powered color therapy</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Features</div>
+        <ul>
+          <li>AI Color Analysis</li>
+          <li>AR Visualization</li>
+          <li>Personalized Palettes</li>
+          <li>Expert Guidance</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <ul>
+          <li>About Us</li>
+          <li>Blog</li>
+          <li>Careers</li>
+          <li>Contact</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Legal</div>
+        <ul>
+          <li>Privacy Policy</li>
+          <li>Terms of Service</li>
+          <li>Cookie Policy</li>
+        </ul>
+      </div>
+            </div>
+    <div class="footer-copyright-row">
+      © Theme You. All rights reserved.
+    </div>
+  </footer>
+  <script>
+    window.API_KEY = "AIzaSyDzkD_h48c3PCwmCVBIWYOO9sJpswooFEw";
+  </script>
+  <script type="module" src="/index.tsx"></script>
+  <script id="omnidimension-web-widget" async src="https://backend.omnidim.io/web_widget.js?secret_key=43a58d35a0791878cec4863680bb7c3b"></script>
+  <script>
+    // Fade-in for visual demo section on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+      const demoSection = document.querySelector('.visual-demo-section');
+      if (!demoSection) return;
+      function onScroll() {
+        const rect = demoSection.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          demoSection.classList.add('visible');
+          window.removeEventListener('scroll', onScroll);
+        }
+      }
+      window.addEventListener('scroll', onScroll);
+      onScroll(); // in case already in view
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Swiper.js Carousel Init
+      var swiper = new Swiper('.visual-demo-swiper', {
+        slidesPerView: 1,
+        spaceBetween: 24,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        breakpoints: {
+          700: { slidesPerView: 2 },
+          1000: { slidesPerView: 3 }
+        },
+        parallax: true
+      });
+      // GSAP Heading Animation
+      if (window.gsap) {
+        gsap.from('.gsap-heading', { opacity: 0, y: 40, duration: 1.2, ease: 'power3.out' });
+      }
+      // Particles.js Init
+      if (window.particlesJS) {
+        particlesJS.load('particles-js', 'particles.json', function() {});
+      }
+      // Mood Audio on Hover
+      const audio = document.getElementById('mood-audio');
+      document.querySelectorAll('.ai-vision-card').forEach(card => {
+        card.addEventListener('mouseenter', () => { audio.currentTime = 0; audio.play(); });
+        card.addEventListener('mouseleave', () => { audio.pause(); });
+      });
+      // Enhanced 3D tilt and floating effect for AI Vision cards
+      function handle3DTilt(card) {
+        card.addEventListener('mousemove', function(e) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * 10;
+          const rotateY = ((x - centerX) / centerX) * 10;
+          card.style.transform = `scale(1.08) rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = '';
+          card.classList.remove('floating');
+        });
+        card.addEventListener('mouseenter', function() {
+          card.classList.add('floating');
+        });
+      }
+      document.querySelectorAll('.ai-vision-card').forEach(handle3DTilt);
+      // Mood Portal Effect
+      const portalOverlay = document.getElementById('mood-portal-overlay');
+      const portalCard = document.getElementById('mood-portal-card');
+      const portalImg = document.getElementById('mood-portal-img');
+      const portalTag = document.getElementById('mood-portal-tag');
+      const portalMoods = document.getElementById('mood-portal-moods');
+      const portalQuote = document.getElementById('mood-portal-quote');
+      const closePortalBtn = document.getElementById('close-portal-btn');
+      const moodAudio = document.getElementById('mood-audio');
+      const moodQuotes = {
+        'Vastu Optimized': '🧿 Vastu Optimized\nThis space harmonizes natural energy with subtle sophistication—ideal for those seeking balance between modern functionality and ancient alignment. Its layout and lighting are consciously crafted to evoke clarity, warmth, and emotional grounding.',
+        'Focus & Productivity': '🎯 Focus & Productivity\nDesigned with depth and drive in mind, this room fuels concentration and momentum. Rich, earthy tones and streamlined furniture channel discipline, making it the ultimate zone for work, ambition, and creative output.',
+        'Dreamy Sanctuary': '🌙 Dreamy Sanctuary\nThis tranquil retreat wraps you in a soft embrace of calm and elegance. With airy pastels and minimalistic warmth, it invites restful sleep, deep thoughts, and a daily reset for your soul.',
+        'default': 'Your space, your sanctuary. Let your mood shine through.'
+      };
+      function openMoodPortal(card) {
+        const img = card.querySelector('img');
+        const tag = card.querySelector('.tag');
+        const moods = card.querySelector('.mood-chips');
+        portalImg.src = img.src;
+        portalImg.alt = img.alt;
+        portalTag.innerHTML = tag ? tag.outerHTML : '';
+        portalMoods.innerHTML = moods ? moods.innerHTML : '';
+        let quoteKey = 'default';
+        if (tag) {
+          if (tag.textContent.includes('Vastu')) quoteKey = 'Vastu Optimized';
+          else if (tag.textContent.includes('Focus')) quoteKey = 'Focus & Productivity';
+          else if (tag.textContent.includes('Dreamy')) quoteKey = 'Dreamy Sanctuary';
+        }
+        portalQuote.textContent = moodQuotes[quoteKey] || moodQuotes['default'];
+        portalOverlay.style.display = 'flex';
+        setTimeout(() => portalCard.classList.add('open'), 10);
+        if (moodAudio) { moodAudio.currentTime = 0; moodAudio.play(); }
+      }
+      function closeMoodPortal() {
+        portalCard.classList.remove('open');
+        setTimeout(() => { portalOverlay.style.display = 'none'; }, 400);
+        if (moodAudio) moodAudio.pause();
+      }
+      document.querySelectorAll('.ai-vision-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          if (!card.classList.contains('swiper-slide-duplicate')) openMoodPortal(card);
+        });
+      });
+      closePortalBtn.addEventListener('click', closeMoodPortal);
+      portalOverlay.addEventListener('click', function(e) {
+        if (e.target === portalOverlay) closeMoodPortal();
+      });
+    });
+  </script>
+  <script>
+    // Before/After Slider Logic
+    (function() {
+      const slider = document.getElementById('before-after-slider');
+      if (!slider) return;
+      const afterImg = slider.querySelector('.after-img');
+      const handle = slider.querySelector('.slider-handle');
+      let dragging = false;
+      function setSlider(x) {
+        const rect = slider.getBoundingClientRect();
+        let percent = (x - rect.left) / rect.width;
+        percent = Math.max(0, Math.min(1, percent));
+        afterImg.style.clipPath = `inset(0 ${(1 - percent) * 100}% 0 0)`;
+        handle.style.left = `${percent * 100}%`;
+      }
+      handle.addEventListener('mousedown', e => { dragging = true; });
+      window.addEventListener('mousemove', e => {
+        if (dragging) setSlider(e.clientX);
+      });
+      window.addEventListener('mouseup', () => { dragging = false; });
+      slider.addEventListener('touchstart', e => { dragging = true; });
+      window.addEventListener('touchmove', e => {
+        if (dragging && e.touches && e.touches[0]) setSlider(e.touches[0].clientX);
+      });
+      window.addEventListener('touchend', () => { dragging = false; });
+      // Init at 50%
+      setSlider(slider.getBoundingClientRect().left + slider.offsetWidth / 2);
+    })();
+    // Fallback particles.js config
+    if (window.particlesJS && !window.particlesConfigLoaded) {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 40 },
+          color: { value: ['#a78bfa', '#e94057', '#00bcd4'] },
+          shape: { type: 'circle' },
+          opacity: { value: 0.25 },
+          size: { value: 4, random: true },
+          move: { enable: true, speed: 1.2, direction: 'none', random: true, straight: false, out_mode: 'out' }
+        },
+        interactivity: { events: { onhover: { enable: false } } },
+        retina_detect: true
+      });
+      window.particlesConfigLoaded = true;
+    }
+  </script>
+</body>
+</html>
